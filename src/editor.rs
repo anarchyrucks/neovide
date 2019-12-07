@@ -1,5 +1,5 @@
 use std::collections::HashMap;
-use druid_shell::piet::Color;
+use render::{Color, color};
 
 use neovim_lib::{Neovim, NeovimApi};
 
@@ -14,7 +14,12 @@ impl PartialEq for Colors {
     fn eq(&self, other: &Colors) -> bool {
         fn compare_options(a: &Option<Color>, b: &Option<Color>) -> bool {
             match (a, b) {
-                (Some(a), Some(b)) => a.as_rgba_u32() == b.as_rgba_u32(),
+                (Some(a), Some(b)) => {
+                    a.r == b.r &&
+                    a.g == b.g &&
+                    a.b == b.b &&
+                    a.a == b.a
+                },
                 (None, None) => true,
                 _ => false
             }
@@ -81,7 +86,7 @@ impl Editor {
             grid: Vec::new(),
             cursor_pos: (0, 0),
             size: (width, height),
-            default_colors: Colors::new(Some(Color::rgb(0xff, 0xff, 0xff)), Some(Color::rgb(0x00, 0x00, 0x00)), Some(Color::rgb(0x88, 0x88, 0x88))),
+            default_colors: Colors::new(Some(color("white")), Some(color("black")), Some(color("gray"))),
             defined_styles: HashMap::new(),
             previous_style: None
         };
