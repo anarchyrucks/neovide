@@ -1,29 +1,13 @@
 use std::collections::HashMap;
-use druid_shell::piet::Color;
+use ggez::graphics::Color;
 
 use neovim_lib::{Neovim, NeovimApi};
 
-#[derive(new, Debug, Clone)]
+#[derive(new, PartialEq, Debug, Clone)]
 pub struct Colors {
     pub foreground: Option<Color>,
     pub background: Option<Color>,
     pub special: Option<Color>
-}
-
-impl PartialEq for Colors {
-    fn eq(&self, other: &Colors) -> bool {
-        fn compare_options(a: &Option<Color>, b: &Option<Color>) -> bool {
-            match (a, b) {
-                (Some(a), Some(b)) => a.as_rgba_u32() == b.as_rgba_u32(),
-                (None, None) => true,
-                _ => false
-            }
-        }
-
-        compare_options(&self.foreground, &other.foreground) &&
-        compare_options(&self.background, &other.background) &&
-        compare_options(&self.special, &other.special)
-    }
 }
 
 #[derive(new, Debug, Clone, PartialEq)]
@@ -81,7 +65,7 @@ impl Editor {
             grid: Vec::new(),
             cursor_pos: (0, 0),
             size: (width, height),
-            default_colors: Colors::new(Some(Color::rgb(0xff, 0xff, 0xff)), Some(Color::rgb(0x00, 0x00, 0x00)), Some(Color::rgb(0x88, 0x88, 0x88))),
+            default_colors: Colors::new(Some(Color::from_rgb(0xff, 0xff, 0xff)), Some(Color::from_rgb(0x00, 0x00, 0x00)), Some(Color::from_rgb(0x88, 0x88, 0x88))),
             defined_styles: HashMap::new(),
             previous_style: None
         };

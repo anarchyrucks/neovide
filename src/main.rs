@@ -1,5 +1,3 @@
-#![windows_subsystem = "windows"]
-
 mod editor;
 mod window;
 
@@ -17,7 +15,7 @@ use rmpv::Value;
 use window::ui_loop;
 use editor::{Colors, Editor, GridLineCell, Style};
 
-use druid_shell::piet::Color;
+use ggez::graphics::Color;
 
 const INITIAL_WIDTH: u16 = 100;
 const INITIAL_HEIGHT: u16 = 50;
@@ -72,7 +70,7 @@ fn handle_cursor_goto(cursor_goto_arguments: &Vec<Value>, editor: &Arc<Mutex<Edi
 }
 
 fn unpack_color(packed_color: u64) -> Color {
-    Color::from_rgba32_u32(((packed_color as u32) << 8) + 255)
+    Color::from_rgba_u32(((packed_color as u32) << 8) + 255)
 }
 
 fn handle_default_colors(default_colors_arguments: &Vec<Value>, editor: &Arc<Mutex<Editor>>) {
