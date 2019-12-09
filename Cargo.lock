@@ -1088,6 +1088,7 @@ dependencies = [
  "ggez 0.5.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "neovim-lib 0.6.0 (git+https://github.com/daa84/neovim-lib)",
  "rmpv 0.4.2 (registry+https://github.com/rust-lang/crates.io-index)",
+ "rust-embed 5.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
@@ -1557,6 +1558,35 @@ dependencies = [
 ]
 
 [[package]]
+name = "rust-embed"
+version = "5.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+dependencies = [
+ "rust-embed-impl 5.2.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "rust-embed-utils 5.0.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "walkdir 2.2.9 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
+name = "rust-embed-impl"
+version = "5.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+dependencies = [
+ "quote 1.0.2 (registry+https://github.com/rust-lang/crates.io-index)",
+ "rust-embed-utils 5.0.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "syn 1.0.8 (registry+https://github.com/rust-lang/crates.io-index)",
+ "walkdir 2.2.9 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
+name = "rust-embed-utils"
+version = "5.0.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+dependencies = [
+ "walkdir 2.2.9 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
 name = "rustc-demangle"
 version = "0.1.16"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1902,7 +1932,7 @@ name = "twox-hash"
 version = "1.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
- "rand 0.4.6 (registry+https://github.com/rust-lang/crates.io-index)",
+ "rand 0.6.5 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
@@ -2337,6 +2367,9 @@ dependencies = [
 "checksum rmpv 0.4.2 (registry+https://github.com/rust-lang/crates.io-index)" = "83caf745acbd99179ab6ce95398ddf548edfa2d3a99ff195248b30cd1524c43f"
 "checksum rodio 0.9.0 (registry+https://github.com/rust-lang/crates.io-index)" = "5d0f961b254e66d147a7b550c78b01308934c97d807a34b417fd0f5a0a0f3a2d"
 "checksum rust-argon2 0.5.1 (registry+https://github.com/rust-lang/crates.io-index)" = "4ca4eaef519b494d1f2848fc602d18816fed808a981aedf4f1f00ceb7c9d32cf"
+"checksum rust-embed 5.1.0 (registry+https://github.com/rust-lang/crates.io-index)" = "8defb88737955626d62a4c7d90e2acf552a79b2f5bd7526cd46697f2d98eb45c"
+"checksum rust-embed-impl 5.2.0 (registry+https://github.com/rust-lang/crates.io-index)" = "50633968284cfc373661345fc6382e62b738079f045738023ebc5e445cf44357"
+"checksum rust-embed-utils 5.0.0 (registry+https://github.com/rust-lang/crates.io-index)" = "97655158074ccb2d2cfb1ccb4c956ef0f4054e43a2c1e71146d4991e6961e105"
 "checksum rustc-demangle 0.1.16 (registry+https://github.com/rust-lang/crates.io-index)" = "4c691c0e608126e00913e33f0ccf3727d5fc84573623b8d65b2df340b5201783"
 "checksum rustc-hash 1.0.1 (registry+https://github.com/rust-lang/crates.io-index)" = "7540fc8b0c49f096ee9c961cda096467dce8084bec6bdca2fc83895fd9b28cb8"
 "checksum rustc_version 0.2.3 (registry+https://github.com/rust-lang/crates.io-index)" = "138e3e0acb6c9fb258b19b67cb8abd63c00679d2851805ea151465464fe9030a"

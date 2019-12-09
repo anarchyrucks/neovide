@@ -1,39 +1,56 @@
 use std::sync::{Arc, Mutex};
+use std::borrow::Cow;
 
-use ggez::{Context, ContextBuilder, GameResult};
+use ggez::{Context, ContextBuilder, GameResult, nalgebra};
 use ggez::event::{self, EventHandler};
-use ggez::graphics::{self, Color, Font};
+use ggez::graphics::{self, Color, DrawMode, DrawParam, Font, FilterMode, Text, Rect, MeshBuilder};
 
 use neovim_lib::NeovimApi;
 
 use crate::editor::{DrawCommand, Editor, Colors};
 
-const FONT_NAME: &str = "Delugia Nerd Font";
-const FONT_SIZE: f64 = 14.0;
-const FONT_WIDTH: f64 = 8.2;
-const FONT_HEIGHT: f64 = 16.4;
+#[derive(RustEmbed)]
+#[folder = "resources/"]
+struct Resources;
 
-// fn process_draw_commands(draw_commands: &Vec<DrawCommand>, default_colors: &Colors, piet: &mut Piet, font: &PietFont) {
-//     for command in draw_commands {
-//         let x = command.col_start as f64 * FONT_WIDTH;
-//         let y = command.row as f64 * FONT_HEIGHT + FONT_HEIGHT;
-//         let top = y - FONT_HEIGHT * 0.8;
-//         let top_left = (x, top);
-//         let width = command.text.chars().count() as f64 * FONT_WIDTH;
-//         let height = FONT_HEIGHT;
-//         let bottom_right = (x + width, top + height);
-//         let region = Rect::from_points(top_left, bottom_right);
-//         piet.fill(region, &command.style.colors.background.clone().or(default_colors.background.clone()).unwrap());
-            
-//         let piet_text = piet.text();
-//         let text_layout = piet_text.new_text_layout(&font, &command.text).build().unwrap();
-//         piet.draw_text(&text_layout, (x, y), &command.style.colors.foreground.clone().or(default_colors.foreground.clone()).unwrap());
-//     }
-// }
+const FONT_NAME: &str = "Delugia Nerd Font";
+const FONT_SIZE: f32 = 14.0;
+const FONT_WIDTH: f32 = 8.2;
+const FONT_HEIGHT: f32 = 16.4;
+
+fn process_draw_commands(ctx: &mut Context, draw_commands: &Vec<DrawCommand>, default_colors: &Colors) {
+    let mut mesh_builder = MeshBuilder::new();
+    for command in draw_commands {
+        let x = command.col_start as f32 * FONT_WIDTH;
+        let y = command.row as f32 * FONT_HEIGHT + FONT_HEIGHT;
+        let top = y - FONT_HEIGHT * 0.8;
+        let width = command.text.chars().count() as f32 * FONT_WIDTH;
+        let height = FONT_HEIGHT;
+        let background_color = command.style.colors.background.clone().or(default_colors.background.clone()).expect("Could not clone default background");
+        mesh_builder.rectangle(DrawMode::fill(), Rect::new(x, top, width, height), background_color);
+        let foreground_color = command.style.colors.foreground.clone().or(default_colors.foreground.clone()).unwrap();
+        graphics::queue_text(ctx, &Text::new(command.text.clone()), nalgebra::Point2::new(x, y), Some(foreground_color));
+    }
+
+    if draw_commands.len() > 0 {
+        let mesh = mesh_builder.build(ctx).expect("Could not build background mesh");
+        graphics::draw(ctx, &mesh, DrawParam::default());
+        graphics::draw_queued_text(ctx, DrawParam::default(), None, FilterMode::Linear);
+    }
+
+
+    // for command in draw_commands {
+    //     let piet_text = piet.text();
+    //     let text_layout = piet_text.new_text_layout(&font, &command.text).build().unwrap();
+    //     piet.draw_text(&text_layout, (x, y), &command.style.colors.foreground.clone().or(default_colors.foreground.clone()).unwrap());
+    // }
+
+}
 
 #[derive(new)]
 struct Window {
-    editor: Arc<Mutex<Editor>>
+    editor: Arc<Mutex<Editor>>,
+    
 }
 
 impl EventHandler for Window {
@@ -41,7 +58,12 @@ impl EventHandler for Window {
         Ok(())
     }
     fn draw(&mut self, ctx: &mut Context) -> GameResult<()> {
-        graphics::clear(ctx, Color::from_rgb(0xff, 0x00, 0x00));
+        // graphics::clear(ctx, editor.default_colors.background.clone().unwrap_or(graphics::BLACK));
+
+        let draw_commands = { self.editor.lock().unwrap().build_draw_commands().clone() };
+        let default_colors = { self.editor.lock().unwrap().default_colors.clone() };
+        process_draw_commands(ctx, &draw_commands, &default_colors);
+
         graphics::present(ctx)
     }
 }
@@ -114,6 +136,12 @@ pub fn ui_loop(editor: Arc<Mutex<Editor>>) {
             .build()
             .unwrap();
 
+    let resources: Vec<Cow<'static, str>> = Resources::iter().collect();
+
+    let font_binary = Resources::get("Delugia.Nerd.Font.Complete.ttf").expect("Could not load resource");
+    graphics::Font::new_glyph_font_bytes(&mut ctx, font_binary.as_ref()).expect("Could not load font");
+
+    graphics::set_resizable(&mut ctx, true);
     let mut window = Window::new(editor);
 
     match event::run(&mut ctx, &mut event_loop, &mut window) {

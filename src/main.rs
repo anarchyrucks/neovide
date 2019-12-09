@@ -3,6 +3,8 @@ mod window;
 
 #[macro_use]
 extern crate derive_new;
+#[macro_use]
+extern crate rust_embed;
 
 use std::sync::mpsc::Receiver;
 use std::sync::{Arc, Mutex};
